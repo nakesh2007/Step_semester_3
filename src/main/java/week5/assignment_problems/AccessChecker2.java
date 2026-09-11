@@ -1,0 +1,39 @@
+public class AccessChecker2 {
+
+    static String classifyAccess(String fieldModifier, String accessorContext) {
+        if (fieldModifier.equals("public")) {
+            return "ALLOWED";
+        }
+
+        if (fieldModifier.equals("private")) {
+            return accessorContext.equals("SAME_CLASS") ? "ALLOWED" : "DENIED";
+        }
+
+        if (fieldModifier.equals("default")) {
+            return accessorContext.equals("SAME_CLASS") ||
+                   accessorContext.equals("SAME_PACKAGE") ? "ALLOWED" : "DENIED";
+        }
+
+        if (fieldModifier.equals("protected")) {
+            return accessorContext.equals("SAME_CLASS") ||
+                   accessorContext.equals("SAME_PACKAGE") ||
+                   accessorContext.equals("SUBCLASS_DIFFERENT_PACKAGE_OWN_TYPE")
+                    ? "ALLOWED" : "DENIED";
+        }
+
+        return "DENIED";
+    }
+
+    static String firstDeniedAttempt(String[][] attempts) {
+        for (int i = 0; i < attempts.length; i++) {
+            String modifier = attempts[i][0];
+            String context = attempts[i][1];
+
+            if (classifyAccess(modifier, context).equals("DENIED")) {
+                return modifier + " via " + context + " (attempt #" + (i + 1) + ")";
+            }
+        }
+
+        return "None Denied";
+    }
+}
